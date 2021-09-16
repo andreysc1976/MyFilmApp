@@ -2,7 +2,7 @@ package ru.a_party.myfilmapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import ru.a_party.myfilmapp.ui.main.MainFragment
+import ru.a_party.myfilmapp.view.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
