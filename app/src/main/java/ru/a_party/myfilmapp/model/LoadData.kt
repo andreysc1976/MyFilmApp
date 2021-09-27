@@ -25,8 +25,8 @@ class LoadDataImpl():LoadData{
 
     override fun loadFilmsBySection(section: Section): List<Film> {
         return listOf(
-            Film("Терминатор",1985),
-            Film("Чужие",1979)
+            Film("Терминатор",1985,1),
+            Film("Чужие",1979,2)
         )
     }
 

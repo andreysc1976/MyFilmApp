@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.a_party.myfilmapp.R
+import ru.a_party.myfilmapp.model.Film
 import ru.a_party.myfilmapp.model.LoadDataImpl
 import ru.a_party.myfilmapp.model.LoadState
 import ru.a_party.myfilmapp.model.Section
@@ -32,7 +33,20 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = SectionAdapter();
+        adapter = SectionAdapter(object : OnItemViewClickListener{
+            override fun onItemClick(film: Film) {
+                val manager = activity?.supportFragmentManager;
+                if (manager!=null){
+                    val bundle = Bundle();
+                    bundle.putParcelable(FilmFragment.BUNDLE_EXTRA,film)
+                    manager.beginTransaction()
+                        .replace(R.id.container,FilmFragment.newInstance(bundle))
+                        .addToBackStack("")
+                        .commitAllowingStateLoss()
+                }
+            }
+
+        } );
         val rv = view.findViewById<RecyclerView>(R.id.sectionRecylerView)
         adapter.sections=LoadDataImpl().loadFromServer();
         rv.adapter = adapter
@@ -42,6 +56,10 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
                 // TODO: Use the ViewModel
+    }
+
+    interface OnItemViewClickListener{
+        fun onItemClick(film: Film)
     }
 
 }

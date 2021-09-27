@@ -1,9 +1,13 @@
 package ru.a_party.myfilmapp.model
 
-class Film(name: String,year:Int) {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+class Film(val title: String,val year:Int, val id:Int) : Parcelable {
     var poster: String? = null
 
-    fun loadPoster(){
+    private fun loadPoster(){
 
     }
 

@@ -13,7 +13,7 @@ import ru.a_party.myfilmapp.model.LoadData
 import ru.a_party.myfilmapp.model.LoadDataImpl
 import ru.a_party.myfilmapp.model.Section
 
-class SectionAdapter:RecyclerView.Adapter<SectionAdapter.SectionHolder>() {
+class SectionAdapter(private var onItemViewClickListener: MainFragment.OnItemViewClickListener?):RecyclerView.Adapter<SectionAdapter.SectionHolder>() {
 
     var sections:List<Section> = listOf()
         @SuppressLint("NotifyDataSetChanged")
@@ -21,6 +21,10 @@ class SectionAdapter:RecyclerView.Adapter<SectionAdapter.SectionHolder>() {
             field = value
             notifyDataSetChanged()
         }
+
+    fun removeListener() {
+        onItemViewClickListener = null
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionHolder {
         return SectionHolder(LayoutInflater.from(parent.context).inflate(R.layout.films_holder,parent,false))
@@ -36,14 +40,12 @@ class SectionAdapter:RecyclerView.Adapter<SectionAdapter.SectionHolder>() {
     }
 
     inner class SectionHolder(view: View) : RecyclerView.ViewHolder(view) {
-
         fun bind(section: Section) {
             itemView.findViewById<TextView>(R.id.textViewSectionName).text =section.name;
             val localRV = itemView.findViewById<RecyclerView>(R.id.rvFilms)
-            val adapter = FilmAdapter();
+            val adapter = FilmAdapter(onItemViewClickListener);
             adapter.films = LoadDataImpl().loadFilmsBySection(section)
             localRV.adapter = adapter
-
             localRV.layoutManager = LinearLayoutManager(this.itemView.context,LinearLayoutManager.HORIZONTAL,false)
         }
 
