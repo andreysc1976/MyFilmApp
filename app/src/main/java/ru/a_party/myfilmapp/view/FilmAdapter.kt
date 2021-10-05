@@ -1,17 +1,16 @@
 package ru.a_party.myfilmapp.view
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.a_party.myfilmapp.R
-import ru.a_party.myfilmapp.model.Film
+import ru.a_party.myfilmapp.model.MovieListResultObject
 
 class FilmAdapter(private var onItemViewClickListener: MainFragment.OnItemViewClickListener?): RecyclerView.Adapter<FilmAdapter.FilmHolder>() {
-    var films:List<Film> = listOf()
+    var films:List<MovieListResultObject> = listOf()
         @SuppressLint("NotifyDataSetChanged")
         set(value){
             field=value
@@ -31,10 +30,12 @@ class FilmAdapter(private var onItemViewClickListener: MainFragment.OnItemViewCl
     }
 
     inner class FilmHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(film: Film) {
+        fun bind(film: MovieListResultObject) {
             itemView.setOnClickListener {
                 onItemViewClickListener?.onItemClick(film)
             }
+            itemView.findViewById<TextView>(R.id.textViewFilmName).text=film.title
+            itemView.findViewById<TextView>(R.id.textViewFilmYear).text = "Рейтинг:"+film?.popularity?.toString()
         }
 
     }
