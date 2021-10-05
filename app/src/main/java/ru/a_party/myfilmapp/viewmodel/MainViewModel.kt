@@ -52,21 +52,25 @@ class MainViewModel : ViewModel() {
     private fun getDataSectionFromServer() {
         liveDataToObserve.value = LoadState.Loading
         Thread{
+            try {
+                var sec1 = Gson().fromJson(getDataFromInet("https://api.themoviedb.org/3/movie/popular"),SectionDataClass::class.java)
+                var section1:Section = Section("Популярные","https://api.themoviedb.org/3/movie/popular")
+                section1.films = sec1.results.asList()
 
-            var sec1 = Gson().fromJson(getDataFromInet("https://api.themoviedb.org/3/movie/popular"),SectionDataClass::class.java)
-            var section1:Section = Section("Популярные","https://api.themoviedb.org/3/movie/popular")
-            section1.films = sec1.results.asList()
+                var sec2 = Gson().fromJson(getDataFromInet("https://api.themoviedb.org/3/movie/now_playing"),SectionDataClass::class.java)
+                var section2:Section = Section("Сейчас в кино","https://api.themoviedb.org/3/movie/now_playing")
+                section2.films = sec2.results.asList()
+                var sec3 = Gson().fromJson(getDataFromInet("https://api.themoviedb.org/3/movie/top_rated"),SectionDataClass::class.java)
+                var section3:Section = Section("В ТОПе","https://api.themoviedb.org/3/movie/top_rated")
+                section3.films = sec3.results.asList()
 
-            var sec2 = Gson().fromJson(getDataFromInet("https://api.themoviedb.org/3/movie/now_playing"),SectionDataClass::class.java)
-            var section2:Section = Section("Сейчас в кино","https://api.themoviedb.org/3/movie/now_playing")
-            section2.films = sec2.results.asList()
-            var sec3 = Gson().fromJson(getDataFromInet("https://api.themoviedb.org/3/movie/top_rated"),SectionDataClass::class.java)
-            var section3:Section = Section("В ТОПе","https://api.themoviedb.org/3/movie/top_rated")
-            section3.films = sec3.results.asList()
+                var sections:List<Section> = listOf(section1,section2,section3)
 
-            var sections:List<Section> = listOf(section1,section2,section3)
+                liveDataToObserve.postValue(LoadState.Success(sections))
+            } catch (e: Exception){
+                liveDataToObserve.postValue(LoadState.Error(Throwable("Internet error")))
+            }
 
-            liveDataToObserve.postValue(LoadState.Success(sections))
         }.start()
     }
 

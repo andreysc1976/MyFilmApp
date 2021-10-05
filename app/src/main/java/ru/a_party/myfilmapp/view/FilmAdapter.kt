@@ -35,7 +35,7 @@ class FilmAdapter(private var onItemViewClickListener: MainFragment.OnItemViewCl
                 onItemViewClickListener?.onItemClick(film)
             }
             itemView.findViewById<TextView>(R.id.textViewFilmName).text=film.title
-            itemView.findViewById<TextView>(R.id.textViewFilmYear).text = "Рейтинг:"+film?.popularity?.toString()
+            itemView.findViewById<TextView>(R.id.textViewFilmYear).text = "Рейтинг:"+film?.vote_average?.toString()
         }
 
     }

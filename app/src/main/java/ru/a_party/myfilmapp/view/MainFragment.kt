@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import ru.a_party.myfilmapp.R
 import ru.a_party.myfilmapp.databinding.MainFragmentBinding
 import ru.a_party.myfilmapp.model.*
@@ -70,6 +71,11 @@ class MainFragment : Fragment() {
                     binding.sectionRecylerView.visibility = View.VISIBLE
                     adapter.sections = it.data
                     adapter.notifyDataSetChanged();
+                }
+                is LoadState.Error -> {
+                    Snackbar
+                        .make(binding.sectionRecylerView,"Ошибка загрузки" ,Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Перезагрузить"){viewModel.getSectionData()}.show()
                 }
             }
         }
