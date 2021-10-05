@@ -1,18 +1,18 @@
 package ru.a_party.myfilmapp.view
 
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import ru.a_party.myfilmapp.R
-import ru.a_party.myfilmapp.model.Film
-import ru.a_party.myfilmapp.model.LoadDataImpl
-import ru.a_party.myfilmapp.model.LoadState
-import ru.a_party.myfilmapp.model.Section
+import ru.a_party.myfilmapp.databinding.MainFragmentBinding
+import ru.a_party.myfilmapp.model.*
 import ru.a_party.myfilmapp.viewmodel.MainViewModel
 
 class MainFragment : Fragment() {
@@ -23,18 +23,27 @@ class MainFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: SectionAdapter
+    private var _binding: MainFragmentBinding? = null
+    private val binding get()=_binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        val view =  inflater.inflate(R.layout.main_fragment, container, false)
+        _binding= MainFragmentBinding.bind(view)
+        return binding.root
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+
         adapter = SectionAdapter(object : OnItemViewClickListener{
-            override fun onItemClick(film: Film) {
+            override fun onItemClick(film: MovieListResultObject) {
                 val manager = activity?.supportFragmentManager;
                 if (manager!=null){
                     val bundle = Bundle();
@@ -47,19 +56,39 @@ class MainFragment : Fragment() {
             }
 
         } );
-        val rv = view.findViewById<RecyclerView>(R.id.sectionRecylerView)
-        adapter.sections=LoadDataImpl().loadFromServer();
+        val rv = binding.sectionRecylerView
         rv.adapter = adapter
         rv.layoutManager = LinearLayoutManager(view.context,LinearLayoutManager.VERTICAL,false)
 
+        viewModel.liveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is LoadState.Loading -> {
+                    binding.loadingLayout.visibility = View.VISIBLE
+                    binding.sectionRecylerView.visibility = View.INVISIBLE
+                }
+                is LoadState.Success-> {
+                    binding.loadingLayout.visibility = View.INVISIBLE
+                    binding.sectionRecylerView.visibility = View.VISIBLE
+                    adapter.sections = it.data
+                    adapter.notifyDataSetChanged();
+                }
+                is LoadState.Error -> {
+                    Snackbar
+                        .make(binding.sectionRecylerView,"Ошибка загрузки" ,Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Перезагрузить"){viewModel.getSectionData()}.show()
+                }
+            }
+        }
+        viewModel.getSectionData()
+    }
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
-                // TODO: Use the ViewModel
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding=null
     }
 
     interface OnItemViewClickListener{
-        fun onItemClick(film: Film)
+        fun onItemClick(film: MovieListResultObject)
     }
 
 }
