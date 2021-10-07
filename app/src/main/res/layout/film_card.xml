@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageViewCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -24,8 +24,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewCard"
+        app:layout_constraintStart_toStartOf="@+id/imageViewCard"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Терминатор 48" />
 
@@ -34,8 +34,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewCard"
+        app:layout_constraintStart_toStartOf="@+id/imageViewCard"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewCard"
         tools:text="2021" />
 </androidx.constraintlayout.widget.ConstraintLayout>
