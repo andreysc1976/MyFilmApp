@@ -8,23 +8,18 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.a_party.myfilmapp.R
-import ru.a_party.myfilmapp.model.Film
-import ru.a_party.myfilmapp.model.LoadData
-import ru.a_party.myfilmapp.model.LoadDataImpl
-import ru.a_party.myfilmapp.model.Section
+import ru.a_party.myfilmapp.model.*
 
-class SectionAdapter(private var onItemViewClickListener: MainFragment.OnItemViewClickListener?):RecyclerView.Adapter<SectionAdapter.SectionHolder>() {
+class SectionAdapter(val onItemViewClickListener: MainFragment.OnItemViewClickListener):RecyclerView.Adapter<SectionAdapter.SectionHolder>() {
 
     var sections:List<Section> = listOf()
         @SuppressLint("NotifyDataSetChanged")
-        set(value){
+        set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    fun removeListener() {
-        onItemViewClickListener = null
-    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SectionHolder {
         return SectionHolder(LayoutInflater.from(parent.context).inflate(R.layout.films_holder,parent,false))
@@ -36,7 +31,6 @@ class SectionAdapter(private var onItemViewClickListener: MainFragment.OnItemVie
 
     override fun getItemCount(): Int {
         return sections.size;
-        //return 5
     }
 
     inner class SectionHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -44,7 +38,7 @@ class SectionAdapter(private var onItemViewClickListener: MainFragment.OnItemVie
             itemView.findViewById<TextView>(R.id.textViewSectionName).text =section.name;
             val localRV = itemView.findViewById<RecyclerView>(R.id.rvFilms)
             val adapter = FilmAdapter(onItemViewClickListener);
-            adapter.films = LoadDataImpl().loadFilmsBySection(section)
+            adapter.films = section.films;
             localRV.adapter = adapter
             localRV.layoutManager = LinearLayoutManager(this.itemView.context,LinearLayoutManager.HORIZONTAL,false)
         }
